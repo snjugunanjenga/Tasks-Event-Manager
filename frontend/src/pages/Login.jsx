@@ -21,7 +21,7 @@ import { Package2, Lock, User2 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
 const loginSchema = z.object({
-  username: z.string().min(1, 'Username is required.'),
+  email: z.string().email('Email is required.'),
   password: z.string().min(1, 'Password is required.'),
 });
 
@@ -34,14 +34,14 @@ export default function Login() {
     formState: { errors, isSubmitting }
   } = useForm({
     resolver: zodResolver(loginSchema),
-    defaultValues: { username: '', password: '' },
+    defaultValues: { email: '', password: '' },
   });
 
   const onSubmit = async (data) => {
     const toastId = toast.loading('Signing in...');
     try {
-      const res = await loginUser(data);
-      toast.success(`Welcome back, ${data.username}!`, { id: toastId });
+      const res = await loginUser(data); // data now has email and password
+      toast.success(`Welcome back!`, { id: toastId });
       login(res.data.token);
       navigate('/dashboard');
     } catch (error) {
@@ -65,16 +65,17 @@ export default function Login() {
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="username" className="text-indigo-800 flex items-center gap-1">
-                <User2 className="w-4 h-4 text-indigo-400" /> Username
+              <Label htmlFor="email" className="text-indigo-800 flex items-center gap-1">
+                <User2 className="w-4 h-4 text-indigo-400" /> Email
               </Label>
               <Input
-                id="username"
-                placeholder="YourUsername"
+                id="email"
+                type="email"
+                placeholder="name@example.com"
                 className="focus:ring-2 focus:ring-purple-400/60"
-                {...register('username')}
+                {...register('email')}
               />
-              {errors.username && <p className="text-sm text-red-500">{errors.username.message}</p>}
+              {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
             </div>
             <div className="space-y-2">
               <Label htmlFor="password" className="text-indigo-800 flex items-center gap-1">

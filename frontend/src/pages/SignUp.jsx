@@ -38,7 +38,9 @@ export default function SignUp() {
   const onSubmit = async (data) => {
     const toastId = toast.loading('Creating your account...');
     try {
-      await registerUser(data);
+      // Normalize email to lowercase before sending
+      const payload = { ...data, email: data.email.toLowerCase() };
+      await registerUser(payload);
       toast.success('Account created successfully!', { id: toastId });
       navigate('/login');
     } catch (error) {
